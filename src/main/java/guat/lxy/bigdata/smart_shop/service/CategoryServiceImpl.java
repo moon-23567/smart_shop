@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -20,6 +22,7 @@ public class CategoryServiceImpl implements CategoryService {
     private static final String CATEGORY_CACHE_KEY = "category:all";
 
     @Override
+    @Cacheable(value = "categoryLocal")
     public List<Category> getAll() {
         List<Category> cacheList = (List<Category>) redisTemplate.opsForValue().get(CATEGORY_CACHE_KEY);
         if (cacheList != null && cacheList.size() > 0) {
@@ -31,6 +34,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @CacheEvict(value = "categoryLocal",allEntries = true)
     public int add(Category category) {
         int rows = categoryMapper.insert(category);
         clearCategoryCache();
@@ -38,6 +42,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @CacheEvict(value = "categoryLocal",allEntries = true)
     public int del(Integer id) {
         int rows = categoryMapper.delete(id);
         clearCategoryCache();
