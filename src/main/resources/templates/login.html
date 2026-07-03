@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>智慧商品管理平台 - 登录</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft Yahei", sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            background: linear-gradient(130deg, #0d47a1, #1565c0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .light1 {
+            position: absolute;
+            width: 420px;
+            height: 420px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 50%;
+            top: -100px;
+            left: -80px;
+            filter: blur(40px);
+        }
+
+        .light2 {
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            background: rgba(200, 220, 255, 0.08);
+            border-radius: 50%;
+            bottom: -80px;
+            right: -60px;
+            filter: blur(45px);
+        }
+
+        .login-card {
+            width: 420px;
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 45px 38px;
+            box-shadow: 0 12px 45px rgba(0, 0, 0, 0.22);
+            z-index: 2;
+        }
+
+        .title-box {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .title-box h2 {
+            color: #0d47a1;
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
+
+        .title-box p {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .input-item {
+            margin-bottom: 24px;
+        }
+
+        .input-item label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .input-item input {
+            width: 100%;
+            height: 48px;
+            padding: 0 16px;
+            border: 1px solid #e0e6f0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: 0.25s;
+        }
+
+        .input-item input:focus {
+            outline: none;
+            border-color: #1565c0;
+            box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.12);
+        }
+
+        .error-text {
+            text-align: center;
+            color: #d32f2f;
+            margin-bottom: 18px;
+        }
+
+        .login-btn {
+            width: 100%;
+            height: 48px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #0d47a1, #1976d2);
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .login-btn:hover {
+            opacity: 0.93;
+            box-shadow: 0 5px 16px rgba(21, 101, 192, 0.3);
+        }
+    </style>
+</head>
+<body>
+<div class="light1"></div>
+<div class="light2"></div>
+
+<div class="login-card">
+    <div class="title-box">
+        <h2>智慧商品信息管理平台</h2>
+        <p>商品后台管理系统 · 用户登录</p>
+    </div>
+
+    <form th:action="@{/doLogin}" method="post">
+        <div th:if="${msg}" class="error-text" th:text="${msg}"></div>
+
+        <div class="input-item">
+            <label>账号</label>
+            <input type="text" name="username" placeholder="请输入登录账号" required>
+        </div>
+
+        <div class="input-item">
+            <label>密码</label>
+            <input type="password" name="password" placeholder="请输入登录密码" required>
+        </div>
+
+        <button class="login-btn" type="submit">立即登录</button>
+    </form>
+</div>
+</body>
+</html>

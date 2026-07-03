@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>商品信息管理</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+<div style="padding: 20px;">
+    <!-- 顶部蓝色标题栏 和首页同款，细微美化圆角阴影 -->
+    <div style="background-color: #0d6efd; color: #fff; padding: 16px 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 6px #cce0f5;">
+        <h4 style="margin: 0; font-weight: 500;">商品信息管理</h4>
+    </div>
+
+    <form th:action="@{/product/list}" method="get">
+    <!-- 搜索区域 浅灰卡片，柔和阴影，和首页卡片统一质感 -->
+    <div style="background: #f8f9fa; padding: 18px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 1px 4px #e4e7ec;">
+        <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+            <div>
+                <label style="margin-bottom:6px;display:block;">商品名称：</label>
+                <input name="name" th:value="${search.name}" type="text" class="form-control" placeholder="输入商品名称搜索" style="width:180px;">
+            </div>
+            <div>
+                <label style="margin-bottom:6px;display:block;">分类：</label>
+                <select name="categoryId" class="form-select" style="width:160px;">
+                    <option value="">全部分类</option>
+                    <option th:each="cat,stat:${catList}" th:value="${cat.id}" th:text="${cat.name}" th:selected="${cat.id==search.categoryId}"></option>
+                </select>
+            </div>
+            <div>
+                <label style="margin-bottom:6px;display:block;">最低价：</label>
+                <input name="minPrice" th:value="${search.minPrice}" type="number" class="form-control" placeholder="最低价格" style="width:130px;">
+            </div>
+            <div>
+                <label style="margin-bottom:6px;display:block;">最高价：</label>
+                <input name="maxPrice" th:value="${search.maxPrice}" type="number" class="form-control" placeholder="最高价格" style="width:130px;">
+            </div>
+            <div style="margin-top:24px;">
+                <button type="submit" class="btn btn-primary px-4">查询</button>
+            </div>
+            <div style="margin-left: auto; margin-top:24px;">
+                <a sec:authorize="hasAuthority('ROLE_admin')" th:href="@{/product/add}" class="btn btn-success px-4">新增商品</a>
+            </div>
+        </div>
+    </div>
+    </form>
+
+    <!-- 表格区域：表头深蓝、行悬停变色、图片精致圆角 -->
+    <div style="box-shadow: 0 1px 4px #e4e7ec; border-radius:8px; overflow:hidden;">
+        <table class="table table-bordered mb-0" style="width: 100%;">
+            <thead>
+            <tr style="background:#0d6efd; color:#fff; text-align:center; font-size:15px;">
+                <th style="padding:14px;">ID</th>
+                <th style="padding:14px;">商品图片</th>
+                <th style="padding:14px;">商品名称</th>
+                <th style="padding:14px;">所属分类</th>
+                <th style="padding:14px;">价格</th>
+                <th style="padding:14px;">发布日期</th>
+                <th style="padding:14px;">操作</th>
+            </tr>
+            </thead>
+            <tbody style="text-align:center; vertical-align: middle; font-size:14px;">
+            <tr th:each="item : ${page.list}" style="transition:0.2s;" onmouseover="this.style.background='#f0f7ff'" onmouseout="this.style.background='white'">
+                <td th:text="${item.id}" style="padding:12px;"></td>
+                <td style="padding:12px;">
+                    <img th:if="${item.imgUrl != null && item.imgUrl != ''}"
+                         th:src="@{/img/}+${item.imgUrl}+'.jpg'"
+                         width="75" height="75"
+                         style="border-radius:6px; object-fit:cover; border:1px solid #dee2e6;">
+                    <span th:unless="${item.imgUrl != null && item.imgUrl != ''}" style="color:#666;">暂无图片</span>
+                </td>
+                <td th:text="${item.name}" style="padding:12px;"></td>
+                <td th:text="${item.categoryName}" style="padding:12px;"></td>
+                <td style="padding:12px; color:#dc3545; font-weight:500;">¥<span th:text="${item.price}"></span></td>
+                <td th:text="${item.releaseDate}" style="padding:12px;"></td>
+                <a sec:authorize="hasAuthority('ROLE_admin')"
+                   th:href="@{/product/edit(id=${item.id})}"
+                   class="btn btn-sm btn-info">编辑</a>
+                <a sec:authorize="hasAuthority('ROLE_admin')"
+                   th:href="@{/product/del(id=${item.id})}"
+                   target="_self"
+                   class="btn btn-sm btn-danger"
+                   onclick="return confirm('确定删除该商品？')">删除</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 分页美化，左右对齐更清爽 -->
+    <!-- 商品表格结束 </table> 之后 -->
+    <!-- 分页美化 -->
+    <div style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:14px;">
+        <span>共<span th:text="${page.total}"></span>条数据，共<span th:text="${page.pages}"></span>页</span>
+        <button type="submit" name="pageNum" value="1" class="btn btn-sm btn-outline-primary">首页</button>
+        <button th:if="${page.pageNum > 1}" type="submit" name="pageNum" th:value="${page.pageNum - 1}" class="btn btn-sm btn-primary">上一页</button>
+        <button th:if="${page.pageNum < page.pages}" type="submit" name="pageNum" th:value="${page.pageNum + 1}" class="btn btn-sm btn-primary">下一页</button>
+        <button type="submit" name="pageNum" th:value="${page.pages}" class="btn btn-sm btn-outline-primary">尾页</button>
+    </div>
+    <button type="submit" name="pageNum" value="1" class="btn btn-outline-primary btn-sm px-3">首页</button>
+            <button type="submit" name="pageNum" value="1" class="btn btn-primary btn-sm px-3 ms-1">1</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

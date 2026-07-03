@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>分类管理</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="p-4">
+<h3>商品分类管理（仅管理员可见）</h3>
+<div class="row mt-4 gap-5">
+    <div class="col-4 border p-4 rounded shadow">
+        <h5>新增分类</h5>
+        <form th:action="@{/category/add}" method="post">
+            <div class="mb-3">
+                <label>分类名称</label>
+                <input name="name" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label>分类描述</label>
+                <textarea name="descp" class="form-control" rows="3"></textarea>
+            </div>
+            <button class="btn btn-success w-100">添加</button>
+        </form>
+    </div>
+    <div class="col-7">
+        <table class="table table-bordered table-hover shadow">
+            <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>分类名称</th>
+                <th>描述</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="c : ${catList}">
+                <td th:text="${c.id}"></td>
+                <td th:text="${c.name}"></td>
+                <td th:text="${c.descp}"></td>
+                <td>
+                    <form th:action="@{/category/del}" method="post" style="display:inline-block;">
+                        <input type="hidden" name="id" th:value="${c.id}">
+                        <button type="submit" onclick="return confirm('确定删除该分类？')" class="btn btn-sm btn-danger">删除</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

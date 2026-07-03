@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="guat.lxy.bigdata.smart_shop.mapper.ProductMapper">
+    <select id="queryProductByCondition" resultType="guat.lxy.bigdata.smart_shop.entity.Product">
+        SELECT p.*, c.name category_name, p.img_url imgUrl
+        FROM product p
+        LEFT JOIN category c ON p.cat_id = c.id
+        <where>
+            <if test="catId != null">
+                p.cat_id = #{catId}
+            </if>
+            <if test="name != null and name != ''">
+                p.name LIKE CONCAT('%',#{name},'%')
+            </if>
+        </where>
+    </select>
+    <insert id="insertProduct" parameterType="guat.lxy.bigdata.smart_shop.entity.Product">
+        INSERT INTO product(name, cat_id, price, descp, img_url, release_Date)
+        VALUES(#{name}, #{catId}, #{price}, #{descp}, #{imgUrl}, #{releaseDate})
+    </insert>
+    <delete id="deleteProduct">
+        DELETE FROM product WHERE id = #{id}
+    </delete>
+</mapper>
