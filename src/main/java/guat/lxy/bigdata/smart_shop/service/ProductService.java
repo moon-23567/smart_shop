@@ -15,8 +15,7 @@ public class ProductService {
     private ProductMapper productMapper;
 
     // 分页查询（移除Redis手动缓存，仅使用注解缓存）
-    public PageInfo<Product> pageProduct(Integer pageNum, Integer pageSize,
-                                         Integer catId, String name, Double minPrice, Double maxPrice){
+    public PageInfo<Product> pageProduct(Integer pageNum, Integer pageSize, Integer catId, String name, Double minPrice, Double maxPrice){
         // 先不分页，查询符合名称、分类的全部数据
         List<Product> allList = productMapper.queryProductByCondition(catId,name);
         // 打印数据库原始结果
@@ -33,14 +32,12 @@ public class ProductService {
         // 打印过滤后剩余条数
         System.out.println("价格过滤后剩余条数：" + allList.size());
 
-        // 手动分页截取数据
-        int start = (pageNum - 1) * pageSize;
-        int end = Math.min(start + pageSize, allList.size());
-        List<Product> pageList = allList.subList(start, end);
-
-        // 封装分页对象，总条数为过滤后的总数量
-        PageInfo<Product> pageInfo = new PageInfo<>(pageList);
+        // 使用PageHelper自动分页（一次性返回全部数据，一页展示所有商品）
+        PageInfo<Product> pageInfo = new PageInfo<>(allList);
+        pageInfo.setPageNum(pageNum);
+        pageInfo.setPageSize(pageSize);
         pageInfo.setTotal(allList.size());
+
         return pageInfo;
     }
 

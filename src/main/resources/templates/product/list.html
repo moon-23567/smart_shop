@@ -75,14 +75,11 @@
                 <td th:text="${item.categoryName}" style="padding:12px;"></td>
                 <td style="padding:12px; color:#dc3545; font-weight:500;">¥<span th:text="${item.price}"></span></td>
                 <td th:text="${item.releaseDate}" style="padding:12px;"></td>
-                <a sec:authorize="hasAuthority('ROLE_admin')"
-                   th:href="@{/product/edit(id=${item.id})}"
-                   class="btn btn-sm btn-info">编辑</a>
-                <a sec:authorize="hasAuthority('ROLE_admin')"
-                   th:href="@{/product/del(id=${item.id})}"
-                   target="_self"
-                   class="btn btn-sm btn-danger"
-                   onclick="return confirm('确定删除该商品？')">删除</a>
+                <td>
+                    <div sec:authorize="hasAuthority('ROLE_admin')">
+                        <a th:href="@{/product/edit/{id}(id=${item.id})}" class="btn btn-sm btn-primary">编辑</a>
+                        <a th:href="@{/product/del(id=${item.id})}" target="_self" class="btn btn-sm btn-danger" onclick="return confirm('确定删除该商品？')">删除</a>
+                    </div>
                 </td>
             </tr>
             </tbody>
@@ -92,17 +89,14 @@
     <!-- 分页美化，左右对齐更清爽 -->
     <!-- 商品表格结束 </table> 之后 -->
     <!-- 分页美化 -->
-    <div style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:14px;">
+    <div style="display:flex;align-items:center;gap:8px;margin-top:18px;font-size:14px;">
         <span>共<span th:text="${page.total}"></span>条数据，共<span th:text="${page.pages}"></span>页</span>
-        <button type="submit" name="pageNum" value="1" class="btn btn-sm btn-outline-primary">首页</button>
-        <button th:if="${page.pageNum > 1}" type="submit" name="pageNum" th:value="${page.pageNum - 1}" class="btn btn-sm btn-primary">上一页</button>
-        <button th:if="${page.pageNum < page.pages}" type="submit" name="pageNum" th:value="${page.pageNum + 1}" class="btn btn-sm btn-primary">下一页</button>
-        <button type="submit" name="pageNum" th:value="${page.pages}" class="btn btn-sm btn-outline-primary">尾页</button>
+        <button type="submit" name="pageNum" value="1" class="btn btn-sm btn-outline-primary" th:disabled="${page.pageNum == 1}">首页</button>
+        <button type="submit" name="pageNum" th:value="${page.pageNum - 1}" class="btn btn-sm btn-outline-primary" th:disabled="${page.pageNum == 1}">上一页</button>
+        <button type="submit" name="pageNum" th:value="${page.pageNum + 1}" class="btn btn-sm btn-outline-primary" th:disabled="${page.pageNum == page.pages}">下一页</button>
+        <button type="submit" name="pageNum" th:value="${page.pages}" class="btn btn-sm btn-outline-primary" th:disabled="${page.pageNum == page.pages}">尾页</button>
     </div>
-    <button type="submit" name="pageNum" value="1" class="btn btn-outline-primary btn-sm px-3">首页</button>
-            <button type="submit" name="pageNum" value="1" class="btn btn-primary btn-sm px-3 ms-1">1</button>
-        </div>
-    </div>
+</div>
 </div>
 </body>
 </html>
